@@ -23,9 +23,29 @@ app.get('/', (req, res) => {
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.4mhth.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
-  const collection = client.db(process.env.DB_NAME).collection("books");
+  const bookDataCollection = client.db(process.env.DB_NAME).collection("books");
     
   console.log(" Successfully connected done")
+  app.post('/addBook',(req, res)=>
+  {
+      const newBookData = req.body;
+      console.log('add new book info',newBookData);
+      bookDataCollection.insertOne(newBookData)
+      .then(result=>
+        {
+            res.send(result)
+        })
+  })
+
+
+  app.get('/books',(req, res)=>
+  {
+      bookDataCollection.find({})
+      .toArray((err,items)=>
+      {
+          res.send(items)
+      })
+  })
   
 });
 

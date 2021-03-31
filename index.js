@@ -46,6 +46,16 @@ client.connect(err => {
           res.send(items)
       })
   })
+
+
+  app.get('/selectedBook/:id', (req, res)=>
+  {
+    bookDataCollection.find({_id:ObjectId(req.params.id)})
+    .toArray((err, item)=>
+    {
+      res.send(item);
+    })
+  })
   
 });
 
